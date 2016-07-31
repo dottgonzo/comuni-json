@@ -50,6 +50,6 @@ async.eachSeries(comuni, function (iterate, cb) {
 
     } else {
 
-        fs.writeFileSync("./comuni.json", JSON.stringify(test), { encoding: "utf-8" })
+        fs.writeFileSync("./comuni.json", JSON.stringify(comuni), { encoding: "utf-8" })
     }
 })
