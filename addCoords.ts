@@ -1,4 +1,33 @@
-import Comuni from "./index";
+interface IComune {
+    nome: string;
+    codice: number;
+    latitude: number;
+    longitude: number;
+    zona: {
+        nome: string;
+        codice: number;
+    },
+    regione: {
+        codice: number;
+        nome: string;
+    },
+    cm: {
+        codice: string;
+        nome: string;
+    },
+    provincia: {
+        codice: number;
+        nome: string;
+    },
+    sigla: string;
+    codiceCatastale: string;
+    cap: number;
+}
+
+
+
+let Comuni:IComune[]= require("./comuni.1.json");
+
 import * as _ from "lodash";
 import * as async from "async";
 import * as fs from "fs";
@@ -8,15 +37,16 @@ let geocoder = require("search-google-geocode");
 var options = {
     language: 'it'
 };
-let comuni = Comuni();
-let test = [comuni[0], comuni[3], comuni[4]]
+const all = Comuni;
+const test = [all[0], all[3], all[4]]
 
 // use callback to return result from geocoding process
 
+const use=all;
 
 // address geocoding
 // reverse geocoding
-async.eachSeries(comuni, function (iterate, cb) {
+async.eachSeries(use, function (iterate, cb) {
 
 
     function callbackGeo(error, result) {
@@ -50,6 +80,6 @@ async.eachSeries(comuni, function (iterate, cb) {
 
     } else {
 
-        fs.writeFileSync("./comuni.json", JSON.stringify(comuni), { encoding: "utf-8" })
+        fs.writeFileSync("./comuni.json", JSON.stringify(use), { encoding: "utf-8" })
     }
 })
