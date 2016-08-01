@@ -1,6 +1,6 @@
 
 interface ICity {
-    name: string;
+    nativeName: string;
     latitude: number;
     longitude: number;
     zipcode: number;
@@ -14,7 +14,7 @@ interface ICity {
 }
 
 interface IGeo {
-    name: string;
+    nativeName: string;
     zipcode: string;
     cities: ICity[];
     main: ICity;
@@ -74,7 +74,7 @@ import * as _ from "lodash";
 import * as fs from "fs";
 
 const all = Regioni;
-const test = [Regioni[0], Regioni[1], Regioni[2]];
+const tests = [all[0], all[1], all[2]];
 
 const use = all;
 // you can use Google options to manage result format 
@@ -86,9 +86,9 @@ _.map(use, function (r, ri) {
         let province: IGeo = {
             zipcode: p,
             cities: [],
-            name: "",
+            nativeName: "",
             main: {
-                name: "",
+                nativeName: "",
                 latitude: 0,
                 longitude: 0,
                 zipcode: 0,
@@ -110,7 +110,7 @@ _.map(use, function (r, ri) {
             if (c.sigla === p) {
                 let city: ICity = {
                     cityCode: c.sigla,
-                    name: c.nome,
+                    nativeName: c.nome,
                     latitude: c.latitude,
                     longitude: c.longitude,
                     zipcode: c.cap,
@@ -125,7 +125,7 @@ _.map(use, function (r, ri) {
 
                 _.map(r.capoluoghi, function (ca, cai) {
                     if (ca === c.nome) {
-                        province.name = ca;
+                        province.nativeName = ca;
                         province.main = city
                         region.cities.push(city)
                     }

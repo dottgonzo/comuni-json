@@ -38,7 +38,7 @@ var options = {
     language: 'it'
 };
 const all = Comuni;
-const test = [all[0], all[3], all[4]]
+const tests = [all[0], all[3], all[4]]
 
 // use callback to return result from geocoding process
 
