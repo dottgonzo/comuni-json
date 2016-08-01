@@ -52,19 +52,29 @@ async.eachSeries(use, function (iterate, cb) {
     function callbackGeo(error, result) {
         if (error) {
             console.log(error)
+            cb()
+
         } else {
             if (result && result.length && result[0]) {
                 _.map(Object.keys(result[0]), function (k) {
                     iterate[k] = result[0][k]
                 })
-                fs.writeFileSync("./comuni.json", JSON.stringify(use), { encoding: "utf-8" })
+                fs.writeFile("./comuni.json", JSON.stringify(use), { encoding: "utf-8" }, function (err) {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                    }
+                    cb()
+
+                })
                 console.log("ok " + iterate.nome + " " + iterate.sigla)
 
             } else {
                 console.warn("WARN " + iterate.nome + " " + iterate.sigla)
+                cb()
+
             }
         }; // on success
-        cb()
     }
 
 
