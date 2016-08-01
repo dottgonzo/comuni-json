@@ -12,6 +12,7 @@
 /// <reference path="globals/minimatch/index.d.ts" />
 /// <reference path="globals/mocha/index.d.ts" />
 /// <reference path="globals/node/index.d.ts" />
+/// <reference path="globals/npm/index.d.ts" />
 /// <reference path="globals/orchestrator/index.d.ts" />
 /// <reference path="globals/q/index.d.ts" />
 /// <reference path="globals/through2/index.d.ts" />

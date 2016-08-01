@@ -1,4 +1,31 @@
 
+
+
+
+
+import * as fs from "fs";
+import * as async from "async";
+import * as _ from "lodash";
+
+let Comuni: IComune[] = require("./comuni.json");
+
+let Regioni: IGeocodes[] = require("./regioni.json");
+
+let countries = require("countryjs");
+
+let Countries: ICountryjs[] = countries.all();
+
+
+
+
+interface IGeocodes {
+    name: string;
+    provinces: IGeo[];
+    cities: ICity[]
+}
+
+
+
 interface ICity {
     nativeName: string;
     latitude: number;
@@ -53,7 +80,12 @@ interface IComune {
 
 }
 
+interface IBoundary {
 
+    latitude: number;
+    longitude: number;
+
+}
 
 interface IgeoJSONfeatures {
     "type": string;
@@ -108,32 +140,49 @@ interface ICountryjs {
     wiki: string;
 }
 
-let Comuni: IComune[] = require("./comuni.json");
-
-let Regioni: IGeo[] = require("./regioni.json").regioni;
-
-let countries = require("countryjs");
-
-let Countries: ICountryjs[] = countries.all();
-import * as fs from "fs";
-import * as async from "async";
-
 
 const all = Countries;
 const tests = [all[0], all[1]];
 
 const use = tests;
 
-interface ISubregion {
+interface Istate {
+    regions: IGeocodes[];
+    boundaries: IBoundary[];
+    capital: ICity;
+    nativeName: string;
+    latlng: number[];
+    isoLang: string[];
+    name: string;
+    tz: string;
+
+}
+
+interface ICountry {
+    states: Istate[];
+    name: string;
+    boundaries: IBoundary[];
+    nativeName: string;
+    capital: ICity;
+    currencies: string[];
+    isoLang: string[];
+    latlng: number[];
+    tz: string;
+
+}
+
+interface ISubcontinent {
 
     name: string;
-
+    countries: ICountry[];
+    boundaries: IBoundary[];
 }
 
 interface IGeobuild {
 
     name: string;
-    subregions: ISubregion[];
+    subcontinents: ISubcontinent[];
+    boundaries: IBoundary[];
 
 }
 
@@ -141,40 +190,101 @@ interface IGeobuild {
 
 const Geobuilds: IGeobuild[] = [];
 
-console.log(JSON.stringify(tests))
 
-let world: IGeobuild[] = []
 
-_.map(use, function (country) {
+const continents: IGeobuild[] = []
 
-    let region_exists = false;
-    let subregion_exists = false;
+_.map(use, function (countryjs) {
+    let continent_exists = false;
 
-    _.map(world, function (region) {
-        if (region.name === country.region) {
-            region_exists = true;
-            _.map(region.subregions, function (subregion) {
-                if (subregion.name === country.subregion) {
-                    subregion_exists = true;
 
+    let capital: ICity;
+    let country: ICountry = { tz: "", capital: capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: [], currencies: countryjs.currencies, isoLang: countryjs.languages }
+    if (country.name === "Afghanistan") {
+        _.map(Regioni, function (p) {
+            _.map(p.cities, function (t) {
+                if (t.nativeName === "Roma") {
+                    console.log("Roma")
+
+                    country.states.push({
+                        name: country.name,
+                        nativeName: country.nativeName,
+                        latlng: country.latlng,
+                        regions: Regioni,
+                        boundaries: [],
+                        capital: t,
+                        isoLang: country.isoLang,
+                        tz: country.tz
+                    })
+                }
+            })
+        })
+    }
+    let subcontinent: ISubcontinent = { name: countryjs.subregion, countries: [country], boundaries: [] }
+
+    let continent: IGeobuild = { name: countryjs.region, subcontinents: [subcontinent], boundaries: [] }
+
+
+    _.map(continents, function (cont) {
+
+        let subcontinent_exists = false;
+
+
+        if (cont.name === continent.name) {
+            continent_exists = true;
+            _.map(cont.subcontinents, function (sub) {
+
+
+                if (sub.name === subcontinent.name) {
+                    subcontinent_exists = true;
+                    let country_exists = false;
+                    _.map(sub.countries, function (co) {
+
+
+                        if (co.name === country.name) {
+                            country_exists = true;
+
+
+                        }
+
+
+
+                    })
+
+                    if (!country_exists) {
+
+
+
+                        subcontinent.countries.push(country)
+
+                    }
 
                 }
 
 
+
             })
+            if (!subcontinent_exists) {
+
+                continent.subcontinents.push(subcontinent)
+            }
 
         }
 
 
     })
-    if (!region_exists) {
-        let region = { name: country.region, subregions:[] }
-        world.push(region)
+
+
+    if (!continent_exists) {
+
+        continents.push(continent)
     }
+
+
 })
 
 
-fs.writeFile("./world.json", JSON.stringify(world), { encoding: "utf-8" }, function (err) {
+fs.writeFile("./world.json", JSON.stringify(continents), { encoding: "utf-8" }, function (err) {
     if (err) {
         console.log(err)
     } else {

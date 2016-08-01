@@ -30,7 +30,7 @@ interface IRegione {
 }
 interface IGeocodes {
     name: string;
-    towns: IGeo[];
+    provinces: IGeo[];
     cities: ICity[]
 }
 interface IComune {
@@ -80,7 +80,7 @@ const use = all;
 // you can use Google options to manage result format 
 
 _.map(use, function (r, ri) {
-    let region = { cities: [], towns: [], name: r.nome };
+    let region:IGeocodes = { cities: [], provinces: [], name: r.nome };
 
     _.map(r.province, function (p, pi) {
         let province: IGeo = {
@@ -133,7 +133,7 @@ _.map(use, function (r, ri) {
             }
 
         })
-        region.towns.push(province)
+        region.provinces.push(province)
 
     })
 
