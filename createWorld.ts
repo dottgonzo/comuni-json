@@ -194,54 +194,62 @@ const Geobuilds: IGeobuild[] = [];
 
 const continents: IGeobuild[] = []
 
+
+let continent_exists = false;
+let subcontinent_exists = false;
+let country_exists = false;
+
+
 _.map(use, function (countryjs) {
-    let continent_exists = false;
 
 
-    let capital: ICity;
-    let country: ICountry = { tz: "", capital: capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: [], currencies: countryjs.currencies, isoLang: countryjs.languages }
-    if (country.nativeName === "Italia") {
+    continent_exists = false;
+
+
+    let Capital: ICity;
+    let Country: ICountry = { tz: "", capital: Capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: [], currencies: countryjs.currencies, isoLang: countryjs.languages }
+    if (Country.name === "Italy") {
         _.map(Regioni, function (p) {
             _.map(p.cities, function (t) {
                 if (t.nativeName === "Roma") {
                     console.log("Roma")
 
-                    country.states.push({
-                        name: country.name,
-                        nativeName: country.nativeName,
-                        latlng: country.latlng,
+                    Country.states.push({
+                        name: "Italy",
+                        nativeName: "Italia",
+                        latlng: Country.latlng,
                         regions: Regioni,
                         boundaries: [],
                         capital: t,
-                        isoLang: country.isoLang,
-                        tz: country.tz
+                        isoLang: Country.isoLang,
+                        tz: Country.tz
                     })
                 }
             })
         })
     }
-    let subcontinent: ISubcontinent = { name: countryjs.subregion, countries: [country], boundaries: [] }
+    let Subcontinent: ISubcontinent = { name: countryjs.subregion, countries: [Country], boundaries: [] }
 
-    let continent: IGeobuild = { name: countryjs.region, subcontinents: [subcontinent], boundaries: [] }
-
-
-    _.map(continents, function (cont) {
-
-        let subcontinent_exists = false;
+    let Continent: IGeobuild = { name: countryjs.region, subcontinents: [Subcontinent], boundaries: [] }
 
 
-        if (cont.name === continent.name) {
+    _.map(continents, function (continent) {
+
+        subcontinent_exists = false;
+
+
+        if (continent.name === Continent.name) {
             continent_exists = true;
-            _.map(cont.subcontinents, function (sub) {
+            _.map(continent.subcontinents, function (subcontinent) {
 
 
-                if (sub.name === subcontinent.name) {
+                if (subcontinent.name === Subcontinent.name) {
                     subcontinent_exists = true;
-                    let country_exists = false;
-                    _.map(sub.countries, function (co) {
+                    country_exists = false;
+                    _.map(subcontinent.countries, function (country) {
 
 
-                        if (co.name === country.name) {
+                        if (country.name === Country.name) {
                             country_exists = true;
 
 
@@ -253,9 +261,9 @@ _.map(use, function (countryjs) {
 
                     if (!country_exists) {
 
+                        console.log("country")
 
-
-                        subcontinent.countries.push(country)
+                        subcontinent.countries.push(Country)
 
                     }
 
@@ -265,8 +273,9 @@ _.map(use, function (countryjs) {
 
             })
             if (!subcontinent_exists) {
+                console.log("subcontinent_exists")
 
-                continent.subcontinents.push(subcontinent)
+                continent.subcontinents.push(Subcontinent)
             }
 
         }
@@ -277,7 +286,9 @@ _.map(use, function (countryjs) {
 
     if (!continent_exists) {
 
-        continents.push(continent)
+        continents.push(Continent)
+        console.log("subcontinent_exists")
+
     }
 
 
