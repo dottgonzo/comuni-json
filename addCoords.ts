@@ -42,7 +42,20 @@ const test = [all[0], all[3], all[4]]
 
 // use callback to return result from geocoding process
 
-const use = all;
+const use = [];
+
+_.map(all, function (i) {
+    if (!i.latitude) {
+        //console.log('todo '+c.nome);
+        use.push(i);
+
+    } else {
+     //   console.log("exists " + i.nome)
+
+
+
+    }
+})
 
 // address geocoding
 // reverse geocoding
@@ -78,15 +91,11 @@ async.eachSeries(use, function (iterate, cb) {
     }
 
 
-    if (!iterate.latitude) {
-        //console.log('todo '+c.nome);
-        geocoder.geocode(iterate.nome, callbackGeo, options);
 
-    } else {
-        console.log("exists " + iterate.nome)
-        cb()
+    //console.log('todo '+c.nome);
+    geocoder.geocode(iterate.nome, callbackGeo, options);
 
-    }
+
 
 
 }, function (err) {
