@@ -4,6 +4,7 @@ interface ICity {
     latitude: number;
     longitude: number;
     cap: number;
+    cityCode: string;
 }
 
 interface IGeo {
@@ -20,10 +21,12 @@ interface IRegione {
     nome: string;
     capoluoghi: string[];
     province: string[];
-    geo: IGeo[];
-    geoMain: ICity[]
 }
-
+interface IGeocodes {
+    name: string;
+    towns: IGeo[];
+    cities: ICity[]
+}
 interface IComune {
     nome: string;
     codice: number;
@@ -55,6 +58,7 @@ interface IComune {
 let Comuni: IComune[] = require("./comuni.json");
 
 let Regioni: IRegione[] = require("./regioni.1.json").regioni;
+let Geocodes: IGeocodes[] = [];
 
 import * as _ from "lodash";
 import * as fs from "fs";
@@ -66,9 +70,8 @@ const use = all;
 // you can use Google options to manage result format 
 
 _.map(use, function (r, ri) {
+    let region = { cities: [], towns: [], name: r.nome };
 
-    r.geo = [];
-    r.geoMain = [];
     _.map(r.province, function (p, pi) {
         let province: IGeo = {
             code: p,
@@ -79,6 +82,7 @@ _.map(use, function (r, ri) {
                 latitude: 0,
                 longitude: 0,
                 cap: 0,
+                cityCode: ""
             },
             latitude: 0,
             longitude: 0
@@ -88,25 +92,26 @@ _.map(use, function (r, ri) {
 
         _.map(Comuni, function (c, ci) {
             if (c.sigla === p) {
-                let city = { city: c.nome, latitude: c.latitude, longitude: c.longitude, cap: c.cap };
+                let city = { cityCode: c.sigla, city: c.nome, latitude: c.latitude, longitude: c.longitude, cap: c.cap };
                 province.cities.push(city)
 
                 _.map(r.capoluoghi, function (ca, cai) {
                     if (ca === c.nome) {
                         province.city = ca;
                         province.main = city
-                        r.geoMain.push(city)
+                        region.cities.push(city)
                     }
                 })
             }
 
         })
-        r.geo.push(province)
+        region.towns.push(province)
 
     })
 
+    Geocodes.push(region)
 
 })
 
-fs.writeFileSync("./regioni.json", JSON.stringify(use), { encoding: "utf-8" })
+fs.writeFileSync("./regioni.json", JSON.stringify(Geocodes), { encoding: "utf-8" })
 
