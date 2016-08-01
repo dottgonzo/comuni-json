@@ -26,7 +26,7 @@ interface IComune {
 
 
 
-let Comuni:IComune[]= require("./comuni.1.json");
+let Comuni: IComune[] = require("./comuni.json");
 
 import * as _ from "lodash";
 import * as async from "async";
@@ -42,7 +42,7 @@ const test = [all[0], all[3], all[4]]
 
 // use callback to return result from geocoding process
 
-const use=all;
+const use = all;
 
 // address geocoding
 // reverse geocoding
@@ -57,8 +57,11 @@ async.eachSeries(use, function (iterate, cb) {
                 _.map(Object.keys(result[0]), function (k) {
                     iterate[k] = result[0][k]
                 })
+                fs.writeFileSync("./comuni.json", JSON.stringify(use), { encoding: "utf-8" })
+                console.log("ok " + iterate.nome + " " + iterate.sigla)
+
             } else {
-                console.warn(iterate.nome)
+                console.warn("WARN " + iterate.nome + " " + iterate.sigla)
             }
         }; // on success
         cb()
@@ -70,6 +73,7 @@ async.eachSeries(use, function (iterate, cb) {
         geocoder.geocode(iterate.nome, callbackGeo, options);
 
     } else {
+        console.log("exists " + iterate.nome)
         cb()
 
     }
@@ -79,7 +83,6 @@ async.eachSeries(use, function (iterate, cb) {
     if (err) {
 
     } else {
-
-        fs.writeFileSync("./comuni.json", JSON.stringify(use), { encoding: "utf-8" })
+        console.log("ok")
     }
 })
