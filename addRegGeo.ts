@@ -1,15 +1,21 @@
 
 interface ICity {
-    city: string;
+    name: string;
     latitude: number;
     longitude: number;
-    cap: number;
+    zipcode: number;
     cityCode: string;
+    state: string;
+    country: string;
+    isoLang: string;
+    tz: string;
+    currency: string;
+    currencySymbol: string;
 }
 
 interface IGeo {
-    city: string;
-    code: string;
+    name: string;
+    zipcode: string;
     cities: ICity[];
     main: ICity;
     latitude: number;
@@ -51,6 +57,10 @@ interface IComune {
     sigla: string;
     codiceCatastale: string;
     cap: number;
+    state: string;
+    country: string;
+    zipcode: string;
+
 }
 
 
@@ -74,15 +84,21 @@ _.map(use, function (r, ri) {
 
     _.map(r.province, function (p, pi) {
         let province: IGeo = {
-            code: p,
+            zipcode: p,
             cities: [],
-            city: "",
+            name: "",
             main: {
-                city: "",
+                name: "",
                 latitude: 0,
                 longitude: 0,
-                cap: 0,
-                cityCode: ""
+                zipcode: 0,
+                cityCode: "",
+                state: "",
+                country: "",
+                isoLang: "",
+                currency: "",
+                tz: "",
+                currencySymbol: ""
             },
             latitude: 0,
             longitude: 0
@@ -92,12 +108,24 @@ _.map(use, function (r, ri) {
 
         _.map(Comuni, function (c, ci) {
             if (c.sigla === p) {
-                let city = { cityCode: c.sigla, city: c.nome, latitude: c.latitude, longitude: c.longitude, cap: c.cap };
+                let city: ICity = {
+                    cityCode: c.sigla,
+                    name: c.nome,
+                    latitude: c.latitude,
+                    longitude: c.longitude,
+                    zipcode: c.cap,
+                    state: c.state,
+                    country: c.country,
+                    isoLang: "it",
+                    currencySymbol: "€",
+                    currency: "Euro",
+                    tz: "Europe/Rome"
+                };
                 province.cities.push(city)
 
                 _.map(r.capoluoghi, function (ca, cai) {
                     if (ca === c.nome) {
-                        province.city = ca;
+                        province.name = ca;
                         province.main = city
                         region.cities.push(city)
                     }
