@@ -144,7 +144,7 @@ interface ICountryjs {
 const all = Countries;
 const tests = [all[0], all[1]];
 
-const use = tests;
+const use = all;
 
 interface Istate {
     regions: IGeocodes[];
@@ -200,7 +200,7 @@ _.map(use, function (countryjs) {
 
     let capital: ICity;
     let country: ICountry = { tz: "", capital: capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: [], currencies: countryjs.currencies, isoLang: countryjs.languages }
-    if (country.name === "Afghanistan") {
+    if (country.nativeName === "Italia") {
         _.map(Regioni, function (p) {
             _.map(p.cities, function (t) {
                 if (t.nativeName === "Roma") {
