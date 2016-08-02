@@ -29,6 +29,7 @@ interface ICity {
     tz: string;
     currency: string;
     currencySymbol: string;
+    distance?: number;
 }
 
 interface IGeo {
@@ -92,21 +93,58 @@ export default class Localize {
 
         if (!(o && o.latitude && o.longitude)) throw Error("Error");
 
+        let pos = { latitude: o.latitude, longitude: o.longitude };
+
         let _this = this;
+        let State: Istate;
+        if (o.state && _this.getState(o.state)) {
+            State = <Istate>_this.getState(o.state)
+            console.log('ss');
 
-        if (o.state) {
-            let State = _this.getState(o.state)
-
-            console.log(o);
 
 
         } else {
             console.log('todo');
+
             throw Error("todo");
 
 
         }
 
+
+        // livello nazionale
+        let allprovinces = _this.getProvincesFromState(State.name);
+
+
+        _.map(allprovinces, function (c) {
+            c.distance = geo.getDistance({ latitude: c.latitude, longitude: c.longitude }, pos);
+
+        })
+
+
+
+
+        let reprov = _.take(_.orderBy(allprovinces, ['distance'], ['asc']), 2);
+
+        let provinces = [];
+        _.map(reprov, function (c: ICity) {
+
+            _.map(_this.getProvinceFromCity(c.nativeName, State.name), function (p) {
+                p.distance = geo.getDistance({ latitude: p.latitude, longitude: p.longitude }, pos);
+
+                provinces.push(p)
+            })
+
+        })
+
+
+        let cities: ICity[] = <ICity[]>_.take(_.orderBy(provinces, ['distance'], ['asc']), 2);
+
+        if (cities[0].distance * 1.4 > cities[0].distance) {
+            cities = [cities[0]]
+        }
+
+        return cities
 
 
     }
@@ -159,8 +197,66 @@ export default class Localize {
 
     }
 
-    getCity(state, o: { continent?: string }) {
-        return true
+    getProvincesFromState(state) {
+
+        let _this = this;
+        let State: Istate;
+
+        if (state) {
+            State = <Istate>_this.getState(state)
+
+        } else {
+            throw Error("todo");
+
+        }
+
+        let provinces: ICity[] = [];
+        _.map(State.regions, function (r) {
+            _.map(r.cities, function (c) {
+
+                provinces.push(c)
+
+            })
+
+        })
+
+
+        return provinces
+
+    }
+
+    getProvinceFromCity(city, state?: string) {
+
+        let _this = this;
+        let State: Istate;
+
+        if (state) {
+            State = <Istate>_this.getState(state)
+
+        } else {
+            throw Error("todo");
+
+        }
+
+        let provinces: ICity[] = [];
+        _.map(State.regions, function (r) {
+            _.map(r.provinces, function (p) {
+                if (p.main.nativeName === city) {
+                    _.map(p.cities, function (c) {
+
+                        provinces.push(c)
+
+
+                    })
+                }
+
+
+            })
+
+        })
+
+
+        return provinces
 
     }
 

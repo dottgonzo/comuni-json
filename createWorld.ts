@@ -38,6 +38,7 @@ interface ICity {
     tz: string;
     currency: string;
     currencySymbol: string;
+    region: string;
 }
 
 interface IGeo {
@@ -213,7 +214,7 @@ _.map(use, function (countryjs) {
             _.map(p.cities, function (t) {
                 if (t.nativeName === "Roma") {
                     console.log("Roma")
-
+                    Country.tz = "Europe/Rome";
                     Country.states.push({
                         name: "Italy",
                         nativeName: "Italia",

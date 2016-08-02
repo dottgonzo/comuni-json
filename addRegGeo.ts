@@ -11,6 +11,7 @@ interface ICity {
     tz: string;
     currency: string;
     currencySymbol: string;
+    region: string;
 }
 
 interface IGeo {
@@ -80,7 +81,7 @@ const use = all;
 // you can use Google options to manage result format 
 
 _.map(use, function (r, ri) {
-    let region:IGeocodes = { cities: [], provinces: [], name: r.nome };
+    let region: IGeocodes = { cities: [], provinces: [], name: r.nome };
 
     _.map(r.province, function (p, pi) {
         let province: IGeo = {
@@ -93,11 +94,12 @@ _.map(use, function (r, ri) {
                 longitude: 0,
                 zipcode: 0,
                 cityCode: "",
-                state: "",
-                country: "",
+                state: "Italy",
+                country: "Italy",
                 isoLang: "",
                 currency: "",
                 tz: "",
+                region: r.nome,
                 currencySymbol: ""
             },
             latitude: 0,
@@ -114,9 +116,10 @@ _.map(use, function (r, ri) {
                     latitude: c.latitude,
                     longitude: c.longitude,
                     zipcode: c.cap,
-                    state: c.state,
-                    country: c.country,
+                    state: "Italy",
+                    country: "Italy",
                     isoLang: "it",
+                    region: r.nome,
                     currencySymbol: "€",
                     currency: "Euro",
                     tz: "Europe/Rome"
