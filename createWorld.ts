@@ -38,7 +38,10 @@ interface ICity {
     tz: string;
     currency: string;
     currencySymbol: string;
-    region: string;
+    distance?: number;
+    subcontinent:string;
+    continent:string;
+    region:string;
 }
 
 interface IGeo {
@@ -147,6 +150,7 @@ const tests = [all[0], all[1]];
 
 const use = all;
 
+
 interface Istate {
     regions: IGeocodes[];
     boundaries: IBoundary[];
@@ -156,6 +160,9 @@ interface Istate {
     isoLang: string[];
     name: string;
     tz: string;
+    country:string;
+    subcontinent:string;
+    continent:string;
 
 }
 
@@ -169,6 +176,8 @@ interface ICountry {
     isoLang: string[];
     latlng: number[];
     tz: string;
+    subcontinent:string;
+    continent:string;
 
 }
 
@@ -208,7 +217,7 @@ _.map(use, function (countryjs) {
 
 
     let Capital: ICity;
-    let Country: ICountry = { tz: "", capital: Capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: [], currencies: countryjs.currencies, isoLang: countryjs.languages }
+    let Country: ICountry = { tz: "", subcontinent:"",continent:"", capital: Capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: [], currencies: countryjs.currencies, isoLang: countryjs.languages }
     if (Country.name === "Italy") {
         _.map(Regioni, function (p) {
             _.map(p.cities, function (t) {
@@ -216,6 +225,9 @@ _.map(use, function (countryjs) {
                     console.log("Roma")
                     Country.tz = "Europe/Rome";
                     Country.states.push({
+                        country:"Italy",
+                        continent:countryjs.region,
+                        subcontinent:countryjs.subregion,
                         name: "Italy",
                         nativeName: "Italia",
                         latlng: Country.latlng,

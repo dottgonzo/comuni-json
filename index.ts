@@ -30,6 +30,9 @@ interface ICity {
     currency: string;
     currencySymbol: string;
     distance?: number;
+    subcontinent:string;
+    continent:string;
+    region:string;
 }
 
 interface IGeo {
@@ -52,6 +55,9 @@ interface Istate {
     isoLang: string[];
     name: string;
     tz: string;
+    country:string;
+    subcontinent:string;
+    continent:string;
 
 }
 
@@ -65,6 +71,8 @@ interface ICountry {
     isoLang: string[];
     latlng: number[];
     tz: string;
+    subcontinent:string;
+    continent:string;
 
 }
 
@@ -73,6 +81,7 @@ interface ISubcontinent {
     name: string;
     countries: ICountry[];
     boundaries: IBoundary[];
+    continent:string;
 }
 
 interface IGeobuild {

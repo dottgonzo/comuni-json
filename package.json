@@ -1,6 +1,6 @@
 {
   "name": "geolocalize",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Comuni Italiani",
   "main": "index.js",
   "scripts": {

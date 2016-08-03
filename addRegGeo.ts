@@ -11,9 +11,11 @@ interface ICity {
     tz: string;
     currency: string;
     currencySymbol: string;
+    distance?: number;
+    subcontinent: string;
+    continent: string;
     region: string;
 }
-
 interface IGeo {
     nativeName: string;
     zipcode: string;
@@ -32,7 +34,11 @@ interface IRegione {
 interface IGeocodes {
     name: string;
     provinces: IGeo[];
-    cities: ICity[]
+    cities: ICity[];
+    state: string;
+    country: string;
+    subcontinent: string;
+    continent: string;
 }
 interface IComune {
     nome: string;
@@ -81,7 +87,7 @@ const use = all;
 // you can use Google options to manage result format 
 
 _.map(use, function (r, ri) {
-    let region: IGeocodes = { cities: [], provinces: [], name: r.nome };
+    let region: IGeocodes = { cities: [], provinces: [], name: r.nome, state: "Italy", subcontinent: 'Southern Europe', continent: "Europe",country:"Italy" };
 
     _.map(r.province, function (p, pi) {
         let province: IGeo = {
@@ -96,11 +102,13 @@ _.map(use, function (r, ri) {
                 cityCode: "",
                 state: "Italy",
                 country: "Italy",
-                isoLang: "",
-                currency: "",
-                tz: "",
+                isoLang: "it",
+                currency: "euro",
+                tz: "Europe/Rome",
                 region: r.nome,
-                currencySymbol: ""
+                currencySymbol: "€",
+                continent:"Europe",
+                subcontinent:"Southern Europe"
             },
             latitude: 0,
             longitude: 0
@@ -122,7 +130,9 @@ _.map(use, function (r, ri) {
                     region: r.nome,
                     currencySymbol: "€",
                     currency: "Euro",
-                    tz: "Europe/Rome"
+                    tz: "Europe/Rome",
+                    subcontinent: 'Southern Europe',
+                    continent: "Europe"
                 };
                 province.cities.push(city)
 
