@@ -39,9 +39,9 @@ interface ICity {
     currency: string;
     currencySymbol: string;
     distance?: number;
-    subcontinent:string;
-    continent:string;
-    region:string;
+    subcontinent: string;
+    continent: string;
+    region: string;
 }
 
 interface IGeo {
@@ -100,7 +100,7 @@ interface IgeoJSONfeatures {
     "geometry": {
         type: string;
         coordinates: [
-            number[][]
+            IBoundary[]
         ]
     }
 }
@@ -153,31 +153,31 @@ const use = all;
 
 interface Istate {
     regions: IGeocodes[];
-    boundaries: IBoundary[];
+    boundaries: IBoundary[][];
     capital: ICity;
     nativeName: string;
     latlng: number[];
     isoLang: string[];
     name: string;
-    tz: string;
-    country:string;
-    subcontinent:string;
-    continent:string;
+    tz: string[];
+    country: string;
+    subcontinent: string;
+    continent: string;
 
 }
 
 interface ICountry {
     states: Istate[];
     name: string;
-    boundaries: IBoundary[];
+    boundaries: IBoundary[][];
     nativeName: string;
     capital: ICity;
     currencies: string[];
     isoLang: string[];
     latlng: number[];
-    tz: string;
-    subcontinent:string;
-    continent:string;
+    tz: string[];
+    subcontinent: string;
+    continent: string;
 
 }
 
@@ -215,24 +215,29 @@ _.map(use, function (countryjs) {
 
     continent_exists = false;
 
+    let bcords = [];
+
+    if (countryjs.geoJSON && countryjs.geoJSON.features && countryjs.geoJSON.features[0] && countryjs.geoJSON.features[0].geometry && countryjs.geoJSON.features[0].geometry.coordinates) {
+        bcords =countryjs.geoJSON.features[0].geometry.coordinates;
+}
 
     let Capital: ICity;
-    let Country: ICountry = { tz: "", subcontinent:"",continent:"", capital: Capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: [], currencies: countryjs.currencies, isoLang: countryjs.languages }
+    let Country: ICountry = { tz: countryjs.timezones, subcontinent: countryjs.subregion, continent: countryjs.region, capital: Capital, latlng: countryjs.latlng, nativeName: countryjs.nativeName, name: countryjs.name, states: [], boundaries: bcords, currencies: countryjs.currencies, isoLang: countryjs.languages }
     if (Country.name === "Italy") {
         _.map(Regioni, function (p) {
             _.map(p.cities, function (t) {
                 if (t.nativeName === "Roma") {
                     console.log("Roma")
-                    Country.tz = "Europe/Rome";
+                    Country.tz = ["Europe/Rome"];
                     Country.states.push({
-                        country:"Italy",
-                        continent:countryjs.region,
-                        subcontinent:countryjs.subregion,
+                        country: "Italy",
+                        continent: countryjs.region,
+                        subcontinent: countryjs.subregion,
                         name: "Italy",
                         nativeName: "Italia",
                         latlng: Country.latlng,
                         regions: Regioni,
-                        boundaries: [],
+                        boundaries: Country.boundaries,
                         capital: t,
                         isoLang: Country.isoLang,
                         tz: Country.tz
@@ -264,12 +269,7 @@ _.map(use, function (countryjs) {
 
                         if (country.name === Country.name) {
                             country_exists = true;
-
-
                         }
-
-
-
                     })
 
                     if (!country_exists) {
@@ -277,14 +277,12 @@ _.map(use, function (countryjs) {
                         console.log("country")
 
                         subcontinent.countries.push(Country)
-
                     }
-
                 }
 
-
-
             })
+
+
             if (!subcontinent_exists) {
                 console.log("subcontinent_exists")
 
