@@ -1,8 +1,3 @@
-
-
-
-
-
 import * as fs from "fs";
 import * as async from "async";
 import * as _ from "lodash";
